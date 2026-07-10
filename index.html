@@ -52,15 +52,10 @@
     if(!('serviceWorker' in navigator)) return;
     var swCode = [
       '"use strict";',
-      'var CACHE="accountant-v2-20260628";',
-      'var SHELL=self.location.href;',
-      // On install: cache the HTML file itself
+      'var CACHE="accountant-v3-20260709";',
+      // On install: activate immediately. Actual caching happens via
+      // the fetch handler below, the first time each resource loads.
       'self.addEventListener("install",function(e){',
-      '  e.waitUntil(',
-      '    caches.open(CACHE).then(function(c){',
-      '      return c.add(SHELL);',
-      '    }).catch(function(){return Promise.resolve();})',
-      '  );',
       '  self.skipWaiting();',
       '});',
       // On activate: clean old caches
