@@ -1,6 +1,6 @@
 # Personal Accountant
 
-A private, offline-first personal finance tracker. Runs entirely on your device — no internet needed after first load, no cloud, no accounts. All data is encrypted and stored locally.
+A private, offline personal finance tracker. Runs entirely on your device no internet needed after first load, no cloud, no accounts. All data is encrypted and stored locally.
 
 ## What it solves
 
@@ -8,7 +8,7 @@ Money is spread across several places and hard to track. Transfers get confused 
 
 ## Home
 
-Real-time snapshot. Shows total balance, current month allocation, your financial goals, and savings rate. The bell icon turns red after 14 days without a backup download. Tap it to go directly to backup.
+Real time snapshot. Shows total balance, current month allocation, your financial goals, and savings rate. The bell icon turns red after 14 days without a backup download. Tap it to go directly to backup.
 
 ## Reports
 
@@ -16,22 +16,22 @@ Financial statements for This Month, Last 6 Months, and This Year. Includes Inco
 
 ## Accounts
 
-Each account you own. Tap to see transaction history, income, expenses, and transfers. Liabilities are listed separately below assets. Net Worth = Total Assets minus Total Liabilities.
+Each account you own. Tap to see transaction history, income, expenses, and transfers. Liabilities are listed separately below assets. Net Worth = Total Assets-Total Liabilities.
 
 ### Account Overdraft
 
-If a bank or mobile money account goes negative, the app automatically moves it to Liabilities — negative cash is money owed, not money owned. Cash and crypto accounts cannot go negative; they are zero-floored. An overdrawn account returns to Assets once its balance is positive again.
+If a bank or mobile money account goes negative, the app automatically moves it to Liabilities. Negative cash is money owed, not money owned. Cash and crypto accounts cannot go negative; they are zero floored. An overdrawn account returns to Assets once its balance is positive again.
 
 ## Transactions
 
-Every entry, newest first. Search by name, account, or category. Filter by date range and type. The summary bar shows totals for visible results. Double-tap any entry to edit it. Reconciliation adjustment entries are locked and show a read-only view when tapped.
+Every entry, newest first. Search by name, account, or category. Filter by date range and type. The summary bar shows totals for visible results. Double tap any entry to edit it. Reconciliation adjustment entries are locked and show a read only view when tapped.
 
 ### Transaction Types
 
 - **Income** adds money to an account.
 - **Expense** reduces it.
-- **Transfer** moves money between your accounts without changing total wealth — excluded from income and expense totals.
-- **Loan Payment** reduces a liability and the account used to pay it — not counted as an expense.
+- **Transfer** moves money between your accounts without changing total wealth excluded from income and expense totals.
+- **Loan Payment** reduces a liability and the account used to pay it, not counted as an expense.
 
 ## Liabilities
 
