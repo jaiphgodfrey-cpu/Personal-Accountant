@@ -1,22 +1,18 @@
 "use strict";
-var CACHE = "accountant-v4-20260814";
+var CACHE = "accountant-v5-20260815";
 
-// On install: explicitly precache the app shell so offline launches work
-// regardless of how the browser resolves the manifest's start_url.
-// (Runtime caching below still catches anything else on first load.)
+// On install: precache the app shell so offline launches work even before
+// the first successful network fetch.
 self.addEventListener("install", function(e) {
   e.waitUntil(
     caches.open(CACHE).then(function(c) {
-      return c.addAll([
-        "./",
-        "index.html"
-      ]).catch(function() { /* best-effort — fetch handler below covers gaps */ });
+      return c.addAll(["./", "index.html"]).catch(function() {});
     })
   );
   self.skipWaiting();
 });
 
-// On activate: clean old caches
+// On activate: clean out old cache versions so stale copies never linger.
 self.addEventListener("activate", function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
@@ -26,10 +22,33 @@ self.addEventListener("activate", function(e) {
   self.clients.claim();
 });
 
-// On fetch: serve from cache, fall back to network, cache successful responses.
-// Navigation requests (opening the app) fall back to the cached app shell
-// if the exact URL isn't in cache — this is the key fix for the white screen.
 self.addEventListener("fetch", function(e) {
+  var isNavigation = e.request.mode === "navigate";
+
+  if (isNavigation) {
+    // NETWORK-FIRST for the app page itself: online, you always get the
+    // latest deployed version. Offline, falls back to whatever was last
+    // cached (via the precache above or a previous successful visit).
+    e.respondWith(
+      fetch(e.request).then(function(res) {
+        if (res && res.status === 200) {
+          var clone = res.clone();
+          caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+        }
+        return res;
+      }).catch(function() {
+        return caches.match(e.request).then(function(cached) {
+          return cached || caches.match("index.html").then(function(shell) {
+            return shell || new Response("Offline", { status: 503 });
+          });
+        });
+      })
+    );
+    return;
+  }
+
+  // CACHE-FIRST for everything else (icons, etc.) — fine to reuse since
+  // these rarely change and this keeps things fast.
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       if (cached) return cached;
@@ -39,14 +58,6 @@ self.addEventListener("fetch", function(e) {
         caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
         return res;
       }).catch(function() {
-        if (cached) return cached;
-        // Offline and not an exact cache match: for page navigations,
-        // fall back to the precached app shell instead of a blank "Offline" response.
-        if (e.request.mode === "navigate") {
-          return caches.match("index.html").then(function(shell) {
-            return shell || new Response("Offline", { status: 503 });
-          });
-        }
         return new Response("Offline", { status: 503 });
       });
     })
