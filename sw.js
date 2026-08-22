@@ -1,18 +1,15 @@
 "use strict";
-var CACHE = "accountant-v5-20260815";
+var CACHE = "accountant-v6-20260822";
 
-// On install: precache the app shell so offline launches work even before
-// the first successful network fetch.
 self.addEventListener("install", function(e) {
   e.waitUntil(
     caches.open(CACHE).then(function(c) {
-      return c.addAll(["./", "index.html"]).catch(function() {});
+      return c.addAll(["./", "index.html"]);
     })
   );
   self.skipWaiting();
 });
 
-// On activate: clean out old cache versions so stale copies never linger.
 self.addEventListener("activate", function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
@@ -24,11 +21,7 @@ self.addEventListener("activate", function(e) {
 
 self.addEventListener("fetch", function(e) {
   var isNavigation = e.request.mode === "navigate";
-
   if (isNavigation) {
-    // NETWORK-FIRST for the app page itself: online, you always get the
-    // latest deployed version. Offline, falls back to whatever was last
-    // cached (via the precache above or a previous successful visit).
     e.respondWith(
       fetch(e.request).then(function(res) {
         if (res && res.status === 200) {
@@ -46,9 +39,6 @@ self.addEventListener("fetch", function(e) {
     );
     return;
   }
-
-  // CACHE-FIRST for everything else (icons, etc.) — fine to reuse since
-  // these rarely change and this keeps things fast.
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       if (cached) return cached;
